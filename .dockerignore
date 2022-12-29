@@ -1,0 +1,5 @@
+node_modules/
+static/
+build/
+README.md
+package.json
