@@ -11,26 +11,18 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type CounterRoute struct {
-	DB  *sqlx.DB
-	ctx context.Context
-}
-
-type counterSummary struct {
-	Total int `json:"total" db:"total"`
-}
-
 // NewHandlerContext returns a new CounterRoute with a database connection.
-func NewHandlerContext(db *sqlx.DB, ctx context.Context) *CounterRoute {
+func NewCounterHandlerContext(db *sqlx.DB, ctx context.Context) *CounterRoute {
 	return &CounterRoute{db, ctx}
 }
 
-func (route *CounterRoute) HTTPHandler(writer http.ResponseWriter, request *http.Request) {
+func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, request *http.Request) {
 	log.Debug().Msg("POST request received. Incrementing counter.")
 	writer.Header().Set("Content-Type", "application/json")
 	var payload []byte
 
-	if request.Method == "POST" {
+	switch request.Method {
+	case "POST":
 		value, err := route.postHandler(request)
 		if err != nil {
 			log.Debug().Msg("Error incrementing counter.")
@@ -38,9 +30,7 @@ func (route *CounterRoute) HTTPHandler(writer http.ResponseWriter, request *http
 		}
 		writer.WriteHeader(http.StatusCreated)
 		payload = value
-	}
-
-	if request.Method == "GET" {
+	case "GET":
 		value, err := route.getHandler(request)
 		if err != nil {
 			log.Debug().Msg("Error getting counter value.")
@@ -48,9 +38,15 @@ func (route *CounterRoute) HTTPHandler(writer http.ResponseWriter, request *http
 		}
 		writer.WriteHeader(http.StatusOK)
 		payload = value
+	default:
+		log.Debug().Msg("Invalid request method.")
+		http.Error(writer, "Invalid request method.", http.StatusMethodNotAllowed)
 	}
 
-	writer.Write([]byte(payload))
+	_, err := writer.Write([]byte(payload))
+	if err != nil {
+		log.Error().Err(err).Msg("Error writing response to the counter endpoint.")
+	}
 }
 
 // postHandler increments the counter in the database.
@@ -82,8 +78,6 @@ func (route *CounterRoute) getHandler(r *http.Request) ([]byte, error) {
 		return []byte{}, err
 	}
 	log.Info().Msg("Counter value retrieved from database.")
-	// marshal the counterSummary struct into a JSON object
-	// marshal the counterSummary struct into a JSON object
 	payload, err := json.MarshalIndent(counterSummary, "", "  ")
 	if err != nil {
 		log.Error().Err(err).Msg("Error marshalling counterSummary struct into JSON.")

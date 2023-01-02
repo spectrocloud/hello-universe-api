@@ -36,6 +36,7 @@ func init() {
 	globalTraceLevel = internal.Getenv("TRACE", "INFO")
 	port := internal.Getenv("PORT", "3000")
 	host := internal.Getenv("HOST", "localhost")
+	globalPort = port
 	globalHostURL = host + ":" + port
 
 	internal.InitLogger(globalTraceLevel)
@@ -72,11 +73,13 @@ func init() {
 
 func main() {
 	ctx := context.Background()
-	counterRoute := endpoints.NewHandlerContext(globalDb, ctx)
+	counterRoute := endpoints.NewCounterHandlerContext(globalDb, ctx)
+	healthRoute := endpoints.NewHealthHandlerContext(ctx)
 
-	http.HandleFunc(internal.ApiPrefix+"counter", counterRoute.HTTPHandler)
+	http.HandleFunc(internal.ApiPrefix+"counter", counterRoute.CounterHTTPHandler)
+	http.HandleFunc(internal.ApiPrefix+"health", healthRoute.HealthHTTPHandler)
 
-	log.Info().Msg("Server is configured for port 3000")
+	log.Info().Msgf("Server is configured for port %s", globalPort)
 	log.Info().Msgf("Trace level set to: %s", globalTraceLevel)
 	log.Info().Msg("Starting client Application")
 	err := http.ListenAndServe(globalHostURL, nil)
