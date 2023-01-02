@@ -26,7 +26,7 @@ jobs:
     # As of 8/8/2022 there is now way to enforce this beahvior in GitHub Actions CI.
       - run: exit 0
 
-  linting:
+  Linting:
     needs: [run-ci]
     runs-on: ubuntu-latest
     steps:
@@ -44,7 +44,7 @@ jobs:
         args: --verbose --timeout 5m
         working-directory: lambdas/internal/
 
-  api-test-no-auth:
+  API-Test:
     runs-on: ubuntu-latest
     needs: [run-ci]
     steps:
