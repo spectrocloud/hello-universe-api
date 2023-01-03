@@ -85,7 +85,7 @@ func main() {
 	err := http.ListenAndServe(globalHostURL, nil)
 	if err != nil {
 		log.Debug().Err(err)
-		log.Fatal().Msg("There's an error with the server")
+		log.Fatal().Err(err).Msg("There's an error with the server")
 	}
 
 }

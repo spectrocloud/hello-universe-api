@@ -55,7 +55,6 @@ jobs:
       with:
         node-version: 18
 
-
     - name: API Test
       run: |
-        make tests
+        make ci-tests
