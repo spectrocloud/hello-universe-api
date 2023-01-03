@@ -8,8 +8,12 @@
 # Test binary, built with `go test -c`
 *.test
 
+# Binary
+hello-universe-api
+
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+.DS_STORE
