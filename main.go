@@ -84,7 +84,6 @@ func main() {
 	log.Info().Msg("Starting client Application")
 	err := http.ListenAndServe(globalHostURL, nil)
 	if err != nil {
-		log.Debug().Err(err)
 		log.Fatal().Err(err).Msg("There's an error with the server")
 	}
 

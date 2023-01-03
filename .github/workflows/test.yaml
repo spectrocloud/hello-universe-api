@@ -26,6 +26,23 @@ jobs:
     # As of 8/8/2022 there is now way to enforce this beahvior in GitHub Actions CI.
       - run: exit 0
 
+  Docker:
+    needs: [run-ci]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - uses: actions/setup-go@v3.1.0
+      with:
+        go-version: '1.19'
+        check-latest: true
+
+    - name: Build
+      run: |
+        docker system prune -a -f
+        docker build --no-cache -t api-server:test .
+
   Linting:
     needs: [run-ci]
     runs-on: ubuntu-latest
@@ -58,3 +75,4 @@ jobs:
     - name: API Test
       run: |
         make ci-tests
+
