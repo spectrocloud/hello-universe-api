@@ -17,3 +17,5 @@ hello-universe-api
 # Dependency directories (remove the comment below to include it)
 # vendor/
 .DS_STORE
+
+node_modules/
