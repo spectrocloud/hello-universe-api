@@ -20,8 +20,8 @@ type CounterRoute struct {
 }
 
 type counterSummary struct {
-	Total  int       `json:"total" db:"total"`
-	Counts []Counter `json:"counts" db:"counts"`
+	Total  int64     `json:"total" db:"total"`
+	Counts []Counter `json:"counts,omitempty" db:"counts"`
 }
 
 type HeatlhRoute struct {

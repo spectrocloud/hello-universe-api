@@ -2,6 +2,7 @@ package endpoints
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -52,20 +53,52 @@ func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, reques
 
 // postHandler increments the counter in the database.
 func (route *CounterRoute) postHandler(r *http.Request) ([]byte, error) {
-
 	currentTime := time.Now().UTC()
 	ua := useragent.Parse(r.UserAgent())
 	browser := ua.Name
 	os := ua.OS
+	transaction, err := route.DB.BeginTx(route.ctx, nil)
+	if err != nil {
+		log.Error().Err(err).Msg("Error beginning transaction.")
+		return []byte{}, err
+	}
 	sqlQuery := `INSERT INTO counter(date,browser,os) VALUES ($1, $2, $3)`
-	_, err := route.DB.ExecContext(route.ctx, sqlQuery, currentTime, browser, os)
+	_, err = transaction.ExecContext(route.ctx, sqlQuery, currentTime, browser, os)
 	if err != nil {
 		log.Error().Err(err).Msg("Error inserting counter value.")
 		log.Debug().Msgf("SQL query: %s", sqlQuery)
 		return []byte{}, err
 	}
 	log.Info().Msg("Counter incremented in database.")
-	return []byte{}, nil
+	getNewCountQuery := `SELECT COUNT(*) AS total FROM counter`
+	var databaseTotal sql.NullInt64
+	result := transaction.QueryRowContext(route.ctx, getNewCountQuery)
+	err = result.Scan(&databaseTotal)
+	if err != nil {
+		log.Error().Err(err).Msg("Error scanning counter value.")
+		return []byte{}, err
+	}
+	if !databaseTotal.Valid {
+		log.Error().Err(err).Msg("Counter value is null.")
+		return []byte{}, err
+	}
+	counterSummary := counterSummary{Total: databaseTotal.Int64}
+	err = transaction.Commit()
+	if err != nil {
+		log.Error().Err(err).Msg("Error committing transaction.")
+		err = transaction.Rollback()
+		if err != nil {
+			log.Error().Err(err).Msg("Error rolling back transaction.")
+			panic(err)
+		}
+		return []byte{}, err
+	}
+	payload, err := json.MarshalIndent(counterSummary, "", "  ")
+	if err != nil {
+		log.Error().Err(err).Msg("Error marshalling counterSummary struct into JSON.")
+		return []byte{}, err
+	}
+	return payload, nil
 }
 
 // getHandler returns the current counter value from the database as a JSON object.
