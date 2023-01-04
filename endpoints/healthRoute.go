@@ -16,6 +16,7 @@ func NewHealthHandlerContext(ctx context.Context) *HeatlhRoute {
 func (health *HeatlhRoute) HealthHTTPHandler(writer http.ResponseWriter, request *http.Request) {
 	log.Debug().Msg("Health check request received.")
 	writer.Header().Set("Content-Type", "application/json")
+	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var payload []byte
 
 	switch request.Method {

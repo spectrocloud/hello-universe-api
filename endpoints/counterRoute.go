@@ -19,6 +19,7 @@ func NewCounterHandlerContext(db *sqlx.DB, ctx context.Context) *CounterRoute {
 func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, request *http.Request) {
 	log.Debug().Msg("POST request received. Incrementing counter.")
 	writer.Header().Set("Content-Type", "application/json")
+	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var payload []byte
 
 	switch request.Method {
