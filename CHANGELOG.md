@@ -1,3 +1,31 @@
+## [1.0.2](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.1...v1.0.2) (2023-01-05)
+
+
+### Bug Fixes
+
+* fixed release issue ([2e3f9ff](https://github.com/spectrocloud/hello-universe-api/commit/2e3f9ff181a292eea998818b53643a54a580ec07))
+
+## [1.0.2](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.1...v1.0.2) (2023-01-05)
+
+
+### Bug Fixes
+
+* fixed release issue ([2e3f9ff](https://github.com/spectrocloud/hello-universe-api/commit/2e3f9ff181a292eea998818b53643a54a580ec07))
+
+## [1.0.2](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.1...v1.0.2) (2023-01-05)
+
+
+### Bug Fixes
+
+* fixed release issue ([2e3f9ff](https://github.com/spectrocloud/hello-universe-api/commit/2e3f9ff181a292eea998818b53643a54a580ec07))
+
+## [1.0.2](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.1...v1.0.2) (2023-01-05)
+
+
+### Bug Fixes
+
+* fixed release issue ([2e3f9ff](https://github.com/spectrocloud/hello-universe-api/commit/2e3f9ff181a292eea998818b53643a54a580ec07))
+
 ## [1.0.1](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.0...v1.0.1) (2023-01-05)
 
 
