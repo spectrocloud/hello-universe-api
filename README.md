@@ -16,8 +16,8 @@ The [Hello Universe](https://github.com/spectrocloud/hello-universe) app include
 The quickest method to start the API server locally is by using the Docker image. 
 
 ```shell
-docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.0
-docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.0
+docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.1
+docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.1
 ```
 
 To start the API server you must have connectivity to a postgres instance. Use [environment variables](#environment-variables) to customize the API server start parameters.
