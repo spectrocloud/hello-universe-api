@@ -64,6 +64,7 @@ jobs:
      
   release:
     name: "Release"
+    needs: [docker]
     runs-on: ubuntu-latest
     steps:
       - id: checkout
