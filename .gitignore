@@ -21,3 +21,4 @@ hello-universe-api
 node_modules/
 
 .env*
+VERSION*
