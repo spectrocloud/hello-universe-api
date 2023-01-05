@@ -19,3 +19,5 @@ hello-universe-api
 .DS_STORE
 
 node_modules/
+
+.env*
