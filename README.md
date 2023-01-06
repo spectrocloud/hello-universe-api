@@ -34,5 +34,6 @@ The API server accepts the following environment variables.
 | `DB_USER`     | The database user name to use for queries.         | `postgres`  |
 | `DB_HOST`     | The hostname or url to the database.               | `localhost` |
 | `DB_PASSWORD` | The database password.                             | `password`  |
+| `DB_INIT`     | Set to `true` if you want the API server to create the required database schema and tables in the target database.| `false` |
 
 
