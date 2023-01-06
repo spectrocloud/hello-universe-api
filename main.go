@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -34,6 +35,7 @@ var (
 
 func init() {
 	globalTraceLevel = internal.Getenv("TRACE", "INFO")
+	initDB := strings.ToLower(internal.Getenv("DB_INIT", "false"))
 	port := internal.Getenv("PORT", "3000")
 	host := internal.Getenv("HOST", "localhost")
 	globalPort = port
@@ -66,6 +68,14 @@ func init() {
 	if err != nil {
 		log.Debug().Msg("Database is not available")
 		log.Fatal().Err(err).Msg("Error connecting to database")
+	}
+
+	if initDB == "true" {
+		log.Debug().Msg("Initializing database")
+		err = internal.InitDB(context.Background(), db)
+		if err != nil {
+			log.Fatal().Err(err).Msg("Error initializing database")
+		}
 	}
 
 	globalDb = db
