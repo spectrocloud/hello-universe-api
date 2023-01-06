@@ -45,15 +45,17 @@ func init() {
 	dbName = internal.Getenv("DB_NAME", "counter")
 	dbUser = internal.Getenv("DB_USER", "postgres")
 	dbHost = internal.Getenv("DB_HOST", "localhost")
+	dbEncryption := internal.Getenv("DB_ENCRYPTION", "disable")
 	dbPassword = internal.Getenv("DB_PASSWORD", "password")
 	dbPort = internal.StringToInt64(internal.Getenv("DB_PORT", "5432"))
 	db, err := sqlx.Open(db_driver, fmt.Sprintf(
-		"host=%s port=%d dbname=%s user=%s password=%s connect_timeout=5 sslmode=disable",
+		"host=%s port=%d dbname=%s user=%s password=%s connect_timeout=5 sslmode=%s",
 		dbHost,
 		dbPort,
 		dbName,
 		dbUser,
 		dbPassword,
+		dbEncryption,
 	))
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error connecting to database")
