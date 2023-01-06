@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.3...v1.0.4) (2023-01-06)
+
+
+### Bug Fixes
+
+* added ability to encrypt db connection ([025c6cc](https://github.com/spectrocloud/hello-universe-api/commit/025c6cc98e6675af0dda8b19de646171f29c640d))
+
 ## [1.0.3](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.2...v1.0.3) (2023-01-06)
 
 
