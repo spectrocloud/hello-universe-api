@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.2...v1.0.3) (2023-01-06)
+
+
+### Bug Fixes
+
+* added DB_INIT capability ([bbf609f](https://github.com/spectrocloud/hello-universe-api/commit/bbf609f587bcae117b0b3ca0ecc16a23ecbb59ef))
+
 ## [1.0.2](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.1...v1.0.2) (2023-01-05)
 
 
