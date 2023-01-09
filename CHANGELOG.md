@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.4...v1.0.5) (2023-01-09)
+
+
+### Bug Fixes
+
+* updated bind interface to use 0.0.0.0 instead of localhost ([3c5897a](https://github.com/spectrocloud/hello-universe-api/commit/3c5897a5724e3d62e8e84cc018fc36225e7f6640))
+
 ## [1.0.4](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.3...v1.0.4) (2023-01-06)
 
 
