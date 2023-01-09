@@ -8,8 +8,8 @@ FROM alpine:latest
 LABEL org.opencontainers.image.source="https://github.com/spectrocloud/hello-universe-api"
 LABEL org.opencontainers.image.description "A Spectro Cloud demo application intended for learning and showcasing products. This is the API server for Hello Universe."
 ENV PORT 3000
-ENV HOST localhost
-ENV DB_HOST localhost
+ENV HOST '0.0.0.0'
+ENV DB_HOST '0.0.0.0'
 ENV DB_PORT 5432
 ENV DB_USER postgres
 ENV DB_PASSWORD password
@@ -17,7 +17,7 @@ ENV DB_NAME counter
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder --chown=appuser:appuser /go/bin/app /usr/bin/app
-RUN apk -U upgrade --no-cache && apk add --no-cache tzdata bash curl openssl && \
+RUN apk -U upgrade --no-cache && apk add --no-cache tzdata bash curl openssl jq bind-tools && \
 chmod a+x /usr/bin/app
 USER appuser
 EXPOSE 3000

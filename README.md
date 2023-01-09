@@ -11,13 +11,17 @@ A Spectro Cloud demo application. This is the API server for the [Hello Universe
 # Overview
 The [Hello Universe](https://github.com/spectrocloud/hello-universe) app includes an API server that expands the capabilities of the application. The API server requires a Postgres database to store and retrieve data. Use the [Hello Universe DB](https://github.com/spectrocloud/hello-universe-db) container for a simple integration with a Postgres database.
 
+# Endpoints
+
+A Postman collection is available to help you explore the API. Review the [Postman collection](./tests/postman_collection.json) to get started.
+
 # Usage
 
 The quickest method to start the API server locally is by using the Docker image. 
 
 ```shell
-docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.4
-docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.4
+docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.5
+docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.5
 ```
 
 To start the API server you must have connectivity to a postgres instance. Use [environment variables](#environment-variables) to customize the API server start parameters.
@@ -29,10 +33,10 @@ The API server accepts the following environment variables.
 | Variable    | Description                                        | Default   |
 |-------------|----------------------------------------------------|-----------|
 | `PORT`        | The port number the application will listen on.    | `3000`      |
-| `HOST`        | The host value name the API server will listen on. | `localhost` |
+| `HOST`        | The host value name the API server will listen on. | `0.0.0.0` |
 | `DB_NAME`     | The database name.                                 | `counter`   |
 | `DB_USER`     | The database user name to use for queries.         | `postgres`  |
-| `DB_HOST`     | The hostname or url to the database.               | `localhost` |
+| `DB_HOST`     | The hostname or url to the database.               | `0.0.0.0` |
 | `DB_PASSWORD` | The database password.                             | `password`  |
 | `DB_ENCRYPTION`| The Postgres [ssl mode](https://www.postgresql.org/docs/current/libpq-ssl.html) behavior to enable. Allowed values are: `require`, `verify-full`, `verify-ca`, or `disable` |`disable`|
 | `DB_INIT`     | Set to `true` if you want the API server to create the required database schema and tables in the target database.| `false` |
