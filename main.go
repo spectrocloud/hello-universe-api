@@ -37,14 +37,15 @@ func init() {
 	globalTraceLevel = internal.Getenv("TRACE", "INFO")
 	initDB := strings.ToLower(internal.Getenv("DB_INIT", "false"))
 	port := internal.Getenv("PORT", "3000")
-	host := internal.Getenv("HOST", "localhost")
+	host := internal.Getenv("HOST", "0.0.0.0")
+	globalHost = host
 	globalPort = port
 	globalHostURL = host + ":" + port
 
 	internal.InitLogger(globalTraceLevel)
 	dbName = internal.Getenv("DB_NAME", "counter")
 	dbUser = internal.Getenv("DB_USER", "postgres")
-	dbHost = internal.Getenv("DB_HOST", "localhost")
+	dbHost = internal.Getenv("DB_HOST", "0.0.0.0")
 	dbEncryption := internal.Getenv("DB_ENCRYPTION", "disable")
 	dbPassword = internal.Getenv("DB_PASSWORD", "password")
 	dbPort = internal.StringToInt64(internal.Getenv("DB_PORT", "5432"))
@@ -91,7 +92,8 @@ func main() {
 	http.HandleFunc(internal.ApiPrefix+"counter", counterRoute.CounterHTTPHandler)
 	http.HandleFunc(internal.ApiPrefix+"health", healthRoute.HealthHTTPHandler)
 
-	log.Info().Msgf("Server is configured for port %s", globalPort)
+	log.Info().Msgf("Server is configured for port %s and listing on %s", globalPort, globalHostURL)
+	log.Info().Msgf("Database is configured for %s:%d", dbHost, dbPort)
 	log.Info().Msgf("Trace level set to: %s", globalTraceLevel)
 	log.Info().Msg("Starting client Application")
 	err := http.ListenAndServe(globalHostURL, nil)
