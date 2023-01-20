@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,28 +22,34 @@ const (
 )
 
 var (
-	dbName           string
-	dbUser           string
-	dbPassword       string
-	dbHost           string
-	dbPort           int64
-	globalTraceLevel string
-	globalDb         *sqlx.DB
-	globalHost       string
-	globalPort       string
-	globalHostURL    string = globalHost + ":" + globalPort
+	dbName              string
+	dbUser              string
+	dbPassword          string
+	dbHost              string
+	dbPort              int64
+	globalTraceLevel    string
+	globalDb            *sqlx.DB
+	globalHost          string
+	globalPort          string
+	globalHostURL       string = globalHost + ":" + globalPort
+	globalAuthorization bool
 )
 
 func init() {
-	globalTraceLevel = internal.Getenv("TRACE", "INFO")
+	globalTraceLevel = strings.ToUpper(internal.Getenv("TRACE", "INFO"))
+	internal.InitLogger(globalTraceLevel)
+	authorizationEnv := strings.ToUpper(internal.Getenv("AUTHORIZATION", "false"))
+	authorization, err := strconv.ParseBool(authorizationEnv)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error parsing authorization")
+	}
+	globalAuthorization = authorization
 	initDB := strings.ToLower(internal.Getenv("DB_INIT", "false"))
 	port := internal.Getenv("PORT", "3000")
 	host := internal.Getenv("HOST", "0.0.0.0")
 	globalHost = host
 	globalPort = port
 	globalHostURL = host + ":" + port
-
-	internal.InitLogger(globalTraceLevel)
 	dbName = internal.Getenv("DB_NAME", "counter")
 	dbUser = internal.Getenv("DB_USER", "postgres")
 	dbHost = internal.Getenv("DB_HOST", "0.0.0.0")
@@ -86,8 +93,8 @@ func init() {
 
 func main() {
 	ctx := context.Background()
-	counterRoute := endpoints.NewCounterHandlerContext(globalDb, ctx)
-	healthRoute := endpoints.NewHealthHandlerContext(ctx)
+	counterRoute := endpoints.NewCounterHandlerContext(globalDb, ctx, globalAuthorization)
+	healthRoute := endpoints.NewHealthHandlerContext(ctx, globalAuthorization)
 
 	http.HandleFunc(internal.ApiPrefix+"counter", counterRoute.CounterHTTPHandler)
 	http.HandleFunc(internal.ApiPrefix+"health", healthRoute.HealthHTTPHandler)
@@ -96,6 +103,7 @@ func main() {
 	log.Info().Msgf("Database is configured for %s:%d", dbHost, dbPort)
 	log.Info().Msgf("Trace level set to: %s", globalTraceLevel)
 	log.Info().Msg("Starting client Application")
+	log.Info().Msgf("Authorization is set to: %v", globalAuthorization)
 	err := http.ListenAndServe(globalHostURL, nil)
 	if err != nil {
 		log.Fatal().Err(err).Msg("There's an error with the server")

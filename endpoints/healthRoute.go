@@ -6,11 +6,12 @@ import (
 	"net/http"
 
 	"github.com/rs/zerolog/log"
+	"spectrocloud.com/hello-universe-api/internal"
 )
 
 // NewHandlerContext returns a new CounterRoute with a database connection.
-func NewHealthHandlerContext(ctx context.Context) *HeatlhRoute {
-	return &HeatlhRoute{ctx}
+func NewHealthHandlerContext(ctx context.Context, authorization bool) *HeatlhRoute {
+	return &HeatlhRoute{ctx, authorization}
 }
 
 func (health *HeatlhRoute) HealthHTTPHandler(writer http.ResponseWriter, request *http.Request) {
@@ -18,6 +19,15 @@ func (health *HeatlhRoute) HealthHTTPHandler(writer http.ResponseWriter, request
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var payload []byte
+
+	if health.authorization {
+		validation := internal.ValidateToken(request.Header.Get("Authorization"))
+		if !validation {
+			log.Info().Msg("Invalid token")
+			http.Error(writer, "Invalid credentials", http.StatusUnauthorized)
+			return
+		}
+	}
 
 	switch request.Method {
 	case "GET":
