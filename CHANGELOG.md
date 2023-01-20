@@ -1,3 +1,11 @@
+## [1.0.6](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.5...v1.0.6) (2023-01-20)
+
+
+### Bug Fixes
+
+* added authorization capability ([f281b03](https://github.com/spectrocloud/hello-universe-api/commit/f281b03e92557d3dba8c28f438acd287f8f8b782))
+* added authorization capability ([99d5a96](https://github.com/spectrocloud/hello-universe-api/commit/99d5a960b6be83af8990f43cca2030bf9c2ff913))
+
 ## [1.0.5](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.4...v1.0.5) (2023-01-09)
 
 
