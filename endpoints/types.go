@@ -15,8 +15,9 @@ type Counter struct {
 }
 
 type CounterRoute struct {
-	DB  *sqlx.DB
-	ctx context.Context
+	DB            *sqlx.DB
+	ctx           context.Context
+	authorization bool
 }
 
 type counterSummary struct {
@@ -25,5 +26,6 @@ type counterSummary struct {
 }
 
 type HeatlhRoute struct {
-	ctx context.Context
+	ctx           context.Context
+	authorization bool
 }

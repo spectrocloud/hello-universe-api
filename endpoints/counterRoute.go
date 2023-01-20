@@ -10,11 +10,12 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/mileusna/useragent"
 	"github.com/rs/zerolog/log"
+	"spectrocloud.com/hello-universe-api/internal"
 )
 
 // NewHandlerContext returns a new CounterRoute with a database connection.
-func NewCounterHandlerContext(db *sqlx.DB, ctx context.Context) *CounterRoute {
-	return &CounterRoute{db, ctx}
+func NewCounterHandlerContext(db *sqlx.DB, ctx context.Context, authorization bool) *CounterRoute {
+	return &CounterRoute{db, ctx, authorization}
 }
 
 func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, request *http.Request) {
@@ -22,6 +23,15 @@ func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, reques
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	var payload []byte
+
+	if route.authorization {
+		validation := internal.ValidateToken(request.Header.Get("Authorization"))
+		if !validation {
+			log.Info().Msg("Invalid token.")
+			http.Error(writer, "Invalid credentials.", http.StatusUnauthorized)
+			return
+		}
+	}
 
 	switch request.Method {
 	case "POST":

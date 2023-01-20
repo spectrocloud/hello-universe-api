@@ -20,8 +20,8 @@ A Postman collection is available to help you explore the API. Review the [Postm
 The quickest method to start the API server locally is by using the Docker image. 
 
 ```shell
-docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.5
-docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.5
+docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.6
+docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.6
 ```
 
 To start the API server you must have connectivity to a postgres instance. Use [environment variables](#environment-variables) to customize the API server start parameters.
@@ -40,5 +40,21 @@ The API server accepts the following environment variables.
 | `DB_PASSWORD` | The database password.                             | `password`  |
 | `DB_ENCRYPTION`| The Postgres [ssl mode](https://www.postgresql.org/docs/current/libpq-ssl.html) behavior to enable. Allowed values are: `require`, `verify-full`, `verify-ca`, or `disable` |`disable`|
 | `DB_INIT`     | Set to `true` if you want the API server to create the required database schema and tables in the target database.| `false` |
+| `AUTHORIZATION`     | Set to `true` if you want the API server to require authorization tokens in the request.| `false` |
 
 
+## Authorization
+
+The API can be enabled with authoriation wich results in all request requiring an authorization header with a token. An anonymous token is available:
+
+```shell
+931A3B02-8DCC-543F-A1B2-69423D1A0B94
+```
+
+To enable authorization for the API set the environment variable `AUTHORIZATION` to `true`.
+Ensure all API requests have an `Authorization` header with the Bearer token.
+
+```shell
+curl --location --request POST 'http://localhost:3000/api/v1/counter' \
+--header 'Authorization: Bearer 931A3B02-8DCC-543F-A1B2-69423D1A0B94'
+```
