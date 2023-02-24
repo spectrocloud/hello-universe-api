@@ -7,6 +7,7 @@ require (
 	github.com/lib/pq v1.10.7
 	github.com/mileusna/useragent v1.2.1
 	github.com/rs/zerolog v1.28.0
+	go.uber.org/automaxprocs v1.5.1
 )
 
 require (
