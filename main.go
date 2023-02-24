@@ -13,6 +13,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
+	_ "go.uber.org/automaxprocs"
 	"spectrocloud.com/hello-universe-api/endpoints"
 	"spectrocloud.com/hello-universe-api/internal"
 )
