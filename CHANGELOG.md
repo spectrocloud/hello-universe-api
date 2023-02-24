@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.6...v1.0.7) (2023-02-24)
+
+
+### Bug Fixes
+
+* added maxgoproxs ([dff7611](https://github.com/spectrocloud/hello-universe-api/commit/dff7611cadc4a4d7a57dbdb2fbcf51e67ee22949))
+
 ## [1.0.6](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.5...v1.0.6) (2023-01-20)
 
 
