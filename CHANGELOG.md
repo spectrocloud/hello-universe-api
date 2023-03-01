@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.7...v1.0.8) (2023-03-01)
+
+
+### Bug Fixes
+
+* added support for OPTIONS and removed bug where options required auth header ([050c132](https://github.com/spectrocloud/hello-universe-api/commit/050c1321115bf687f5b2361963117478c9c7a2d9))
+
 ## [1.0.7](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.6...v1.0.7) (2023-02-24)
 
 
