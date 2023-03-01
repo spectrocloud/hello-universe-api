@@ -20,8 +20,8 @@ A Postman collection is available to help you explore the API. Review the [Postm
 The quickest method to start the API server locally is by using the Docker image. 
 
 ```shell
-docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.7
-docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.7
+docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.8
+docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.8
 ```
 
 To start the API server you must have connectivity to a postgres instance. Use [environment variables](#environment-variables) to customize the API server start parameters.

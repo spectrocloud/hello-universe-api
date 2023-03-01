@@ -22,9 +22,10 @@ func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, reques
 	log.Debug().Msg("POST request received. Incrementing counter.")
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Header().Set("Access-Control-Allow-Origin", "*")
+	writer.Header().Set("Access-Control-Allow-Headers", "*")
 	var payload []byte
 
-	if route.authorization {
+	if route.authorization && request.Method != "OPTIONS" {
 		validation := internal.ValidateToken(request.Header.Get("Authorization"))
 		if !validation {
 			log.Info().Msg("Invalid token.")
@@ -50,6 +51,10 @@ func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, reques
 		}
 		writer.WriteHeader(http.StatusOK)
 		payload = value
+	case "OPTIONS":
+		log.Debug().Msg("OPTIONS request received.")
+		log.Debug().Interface("request", request.Header).Msg("Request received.")
+		writer.WriteHeader(http.StatusOK)
 	default:
 		log.Debug().Msg("Invalid request method.")
 		http.Error(writer, "Invalid request method.", http.StatusMethodNotAllowed)
