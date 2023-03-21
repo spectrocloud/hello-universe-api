@@ -1,3 +1,10 @@
+## [1.0.9](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.8...v1.0.9) (2023-03-21)
+
+
+### Bug Fixes
+
+* updated dependencies and updated gitleaks ([9e989e1](https://github.com/spectrocloud/hello-universe-api/commit/9e989e12a600691fb11ceff6b51625d514a62895))
+
 ## [1.0.8](https://github.com/spectrocloud/hello-universe-api/compare/v1.0.7...v1.0.8) (2023-03-01)
 
 
