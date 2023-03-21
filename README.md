@@ -9,7 +9,7 @@ A Spectro Cloud demo application. This is the API server for the [Hello Universe
 </p>
 
 # Overview
-The [Hello Universe](https://github.com/spectrocloud/hello-universe) app includes an API server that expands the capabilities of the application. The API server requires a Postgres database to store and retrieve data. Use the [Hello Universe DB](https://github.com/spectrocloud/hello-universe-db) container for a simple integration with a Postgres database.
+The [Hello Universe](https://github.com/spectrocloud/hello-universe) app includes an API server that expands the capabilities of the application. The API server requires a Postgres database to store and retrieve data. Use the [Hello Universe DB](https://github.com/spectrocloud/hello-universe-db) container for simple integration with a Postgres database.
 
 # Endpoints
 
@@ -20,11 +20,11 @@ A Postman collection is available to help you explore the API. Review the [Postm
 The quickest method to start the API server locally is by using the Docker image. 
 
 ```shell
-docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.8
-docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.8
+docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.9
+docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.9
 ```
 
-To start the API server you must have connectivity to a postgres instance. Use [environment variables](#environment-variables) to customize the API server start parameters.
+To start the API server you must have connectivity to a Postgres instance. Use [environment variables](#environment-variables) to customize the API server start parameters.
 
 ## Environment Variables
 
@@ -45,7 +45,7 @@ The API server accepts the following environment variables.
 
 ## Authorization
 
-The API can be enabled with authoriation wich results in all request requiring an authorization header with a token. An anonymous token is available:
+The API can be enabled with authorization which results in all requests requiring an authorization header with a token. An anonymous token is available:
 
 ```shell
 931A3B02-8DCC-543F-A1B2-69423D1A0B94
