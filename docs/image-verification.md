@@ -9,7 +9,7 @@ Use the following command to verify the authenticity of the container image. Rep
 
 ```shell
 cosign verify --key https://raw.githubusercontent.com/spectrocloud/librarium/master/static/cosign.pub \
-docker ghcr.io/spectrocloud/hello-universe-api:1.0.10
+ghcr.io/spectrocloud/hello-universe-api:1.0.10
 ```
 
 If the container image is valid, the following output is displayed. The example output is formatted using `jq` to improve readability.
