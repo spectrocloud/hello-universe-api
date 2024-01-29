@@ -2,7 +2,7 @@ name: Release to Production
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +43,6 @@ jobs:
         if: ${{ steps.version.outputs.VERSION != ''}}
         uses: docker/setup-buildx-action@v2
 
-
       - name: Login to GHCR
         if: ${{ steps.version.outputs.VERSION != ''}}
         uses: docker/login-action@v1
@@ -54,6 +53,7 @@ jobs:
 
       - name: Build and Push Docker Image
         if: ${{ steps.version.outputs.VERSION != ''}}
+        id: build-and-push
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -61,7 +61,23 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository }}:${{steps.version.outputs.VERSION}}
-     
+
+      - uses: sigstore/cosign-installer@v3.3.0
+
+      - name: Image Signing
+        run: |
+          cosign sign --yes \
+          -a "repo=${{ github.repository }}" \
+          -a "workflow=${{ github.workflow }}" \
+          -a "ref=${{ github.sha }}" \
+          -a "owner=Spectro Cloud" \
+          --key env://COSIGN_PRIVATE_KEY --recursive "${TAGS}@${DIGEST}"
+        env:
+          TAGS: ghcr.io/${{ github.repository }}:${{steps.dependencies.outputs.VERSION}}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+
   release:
     name: "Release"
     needs: [docker]
@@ -82,4 +98,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-              npx semantic-release
+          npx semantic-release

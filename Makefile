@@ -1,3 +1,5 @@
+.PHONY: license
+
 
 VERSION:=1.0.0
 
@@ -22,3 +24,8 @@ ci-tests: build docker-pull-db docker-run-db
 start-server: build docker-pull-db docker-run-db
 	sleep 3
 	./hello-universe-api
+
+
+license: ## Adds a license header to all files. Reference https://github.com/hashicorp/copywrite to learn more.
+	@echo "Applying license headers..."
+	 copywrite headers	

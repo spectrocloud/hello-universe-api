@@ -22,3 +22,7 @@ node_modules/
 
 .env*
 VERSION*
+
+## Security
+
+cosign.key
