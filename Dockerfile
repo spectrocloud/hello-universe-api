@@ -1,3 +1,5 @@
+# Copyright (c) HashiCorp, Inc.
+
 FROM golang:1.20.2-alpine3.17 as builder
 WORKDIR /go/src/app
 COPY . .
