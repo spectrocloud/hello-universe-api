@@ -1,3 +1,6 @@
+// Copyright (c) Spectro Cloud
+// SPDX-License-Identifier: MPL-2.0
+
 package endpoints
 
 import (
@@ -18,7 +21,7 @@ func TestNewHealthHanderContext(t *testing.T) {
 
 	if health != nil {
 
-		if health.ctx != nil {
+		if health.ctx == nil {
 			t.Errorf("Expected context to be %v, but got %v", ctx, health.ctx)
 		}
 
