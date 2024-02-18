@@ -27,7 +27,7 @@ type counterSummary struct {
 	Counts []Counter `json:"counts,omitempty" db:"counts"`
 }
 
-type HeatlhRoute struct {
+type HealthRoute struct {
 	ctx           context.Context
 	authorization bool
 }
