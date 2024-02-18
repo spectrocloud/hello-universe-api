@@ -113,8 +113,7 @@ func TestCounterHTTPHandlerGET(t *testing.T) {
 		t.Errorf("Error unmarshalling response: %s", err)
 	}
 
-fmt.Println(result)
-	
+	fmt.Println(result)
 
 	if result.Total == 0 {
 		t.Errorf("handler returned unexpected body: got %v want %v",
@@ -122,9 +121,8 @@ fmt.Println(result)
 	}
 }
 
-
 func TestCounterHTTPHandlerPOST(t *testing.T) {
-	
+
 	db, err := startDB()
 	if err != nil {
 		t.Errorf("Expected a new database connection, but got %s", err)
@@ -152,8 +150,6 @@ func TestCounterHTTPHandlerPOST(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error unmarshalling response: %s", err)
 	}
-	
-
 
 	if result.Total < 0 {
 		t.Errorf("handler returned unexpected body: got %v want %s",
