@@ -8,8 +8,6 @@ import (
 	"testing"
 )
 
-
-
 func TestNewHealthHanderContext(t *testing.T) {
 	ctx := context.Background()
 	authorization := true
@@ -23,28 +21,24 @@ func TestNewHealthHanderContext(t *testing.T) {
 		if health.ctx != nil {
 			t.Errorf("Expected context to be %v, but got %v", ctx, health.ctx)
 		}
-	
+
 		if health.authorization != authorization {
 			t.Errorf("Expected authorization to be %v, but got %v", authorization, health.authorization)
 		}
 
 	}
 
-
 }
-
 
 func TestHealthHTTPHandler(t *testing.T) {
 
 	health := NewHealthHandlerContext(context.Background(), false)
 
-
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "v1/health", nil)
 	if err != nil {
-			t.Fatal(err)
+		t.Fatal(err)
 	}
-
 
 	handler := http.HandlerFunc(health.HealthHTTPHandler)
 	handler.ServeHTTP(rr, req)
@@ -66,13 +60,11 @@ func TestHealthHTTPHandlerInvalidMethod(t *testing.T) {
 
 	health := NewHealthHandlerContext(context.Background(), false)
 
-
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("POST", "v1/health", nil)
 	if err != nil {
-			t.Fatal(err)
+		t.Fatal(err)
 	}
-
 
 	handler := http.HandlerFunc(health.HealthHTTPHandler)
 	handler.ServeHTTP(rr, req)
@@ -92,16 +84,14 @@ func TestHealthHTTPHandlerInvalidMethod(t *testing.T) {
 }
 
 func TestHealthHTTPHandlerInvalidToken(t *testing.T) {
-	
-	health := NewHealthHandlerContext(context.Background(), true)
 
+	health := NewHealthHandlerContext(context.Background(), true)
 
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "v1/health", nil)
 	if err != nil {
-			t.Fatal(err)
+		t.Fatal(err)
 	}
-
 
 	handler := http.HandlerFunc(health.HealthHTTPHandler)
 	handler.ServeHTTP(rr, req)
@@ -121,21 +111,17 @@ func TestHealthHTTPHandlerInvalidToken(t *testing.T) {
 }
 
 func TestHealthHTTPHandlerValidToken(t *testing.T) {
-	
+
 	health := NewHealthHandlerContext(context.Background(), true)
 
-
-	rr := httptest.NewRecorder(
-	)
+	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "v1/health", nil)
 	if err != nil {
-			t.Fatal(err)
+		t.Fatal(err)
 	}
 	req.Header = http.Header{
 		"Authorization": []string{"Bearer 931A3B02-8DCC-543F-A1B2-69423D1A0B94"},
 	}
-	
-
 
 	handler := http.HandlerFunc(health.HealthHTTPHandler)
 	handler.ServeHTTP(rr, req)
