@@ -156,7 +156,7 @@ func TestCounterHTTPHandlerPOST(t *testing.T) {
 			result.Total, "larger than zero")
 	}
 
-	if len(result.Counts) < 0 {
+	if len(result.Counts) == 0 {
 		t.Errorf("handler returned unexpected body: got %v want %s",
 			len(result.Counts), "larger than zero")
 	}
