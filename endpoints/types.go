@@ -1,4 +1,5 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright (c) Spectro Cloud
+// SPDX-License-Identifier: MPL-2.0
 
 package endpoints
 
@@ -27,7 +28,7 @@ type counterSummary struct {
 	Counts []Counter `json:"counts,omitempty" db:"counts"`
 }
 
-type HeatlhRoute struct {
+type HealthRoute struct {
 	ctx           context.Context
 	authorization bool
 }

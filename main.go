@@ -1,4 +1,5 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright (c) Spectro Cloud
+// SPDX-License-Identifier: MPL-2.0
 
 package main
 

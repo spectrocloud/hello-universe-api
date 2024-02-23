@@ -1,4 +1,5 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright (c) Spectro Cloud
+// SPDX-License-Identifier: MPL-2.0
 
 package endpoints
 
@@ -12,11 +13,11 @@ import (
 )
 
 // NewHandlerContext returns a new CounterRoute with a database connection.
-func NewHealthHandlerContext(ctx context.Context, authorization bool) *HeatlhRoute {
-	return &HeatlhRoute{ctx, authorization}
+func NewHealthHandlerContext(ctx context.Context, authorization bool) *HealthRoute {
+	return &HealthRoute{ctx, authorization}
 }
 
-func (health *HeatlhRoute) HealthHTTPHandler(writer http.ResponseWriter, request *http.Request) {
+func (health *HealthRoute) HealthHTTPHandler(writer http.ResponseWriter, request *http.Request) {
 	log.Debug().Msg("Health check request received.")
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -51,6 +52,6 @@ func (health *HeatlhRoute) HealthHTTPHandler(writer http.ResponseWriter, request
 }
 
 // getHandler returns a health check response.
-func (health *HeatlhRoute) getHandler(r *http.Request) ([]byte, error) {
+func (health *HealthRoute) getHandler(r *http.Request) ([]byte, error) {
 	return json.Marshal(map[string]string{"status": "OK"})
 }

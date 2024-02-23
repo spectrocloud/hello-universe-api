@@ -1,4 +1,5 @@
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+![Coverage](https://img.shields.io/badge/Coverage-56.1%25-yellow)
 
 # Hello Universe API
 
@@ -21,8 +22,8 @@ A Postman collection is available to help you explore the API. Review the [Postm
 The quickest method to start the API server locally is by using the Docker image.
 
 ```shell
-docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.9
-docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.9
+docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.11
+docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.11
 ```
 
 To start the API server you must have connectivity to a Postgres instance. Use [environment variables](#environment-variables) to customize the API server start parameters.
