@@ -114,7 +114,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ steps.import-secrets.outputs.VAULT_GITHUB_TOKEN }}
-          branch: ${{ github.GITHUB_HEAD_REF }}
+          branch: ${{ github.GITHUB_BASE_REF }}
 
   API-Test:
     runs-on: ubuntu-latest
