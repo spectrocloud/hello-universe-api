@@ -116,7 +116,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ steps.import-secrets.outputs.VAULT_GITHUB_TOKEN }}
-          branch: ${{ github.GITHUB_BASE_REF }}
+          branch: ${{ github.GITHUB_REF }}
           repository: ${{ github.repository }}
           force_with_lease: true
 
