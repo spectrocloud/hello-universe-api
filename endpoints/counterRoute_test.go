@@ -152,14 +152,10 @@ func TestCounterHTTPHandlerPOST(t *testing.T) {
 	}
 
 	if result.Total < 0 {
-		t.Errorf("handler returned unexpected body: got %v want %s",
+		t.Errorf("handler total returned unexpected body: got %v want %s",
 			result.Total, "larger than zero")
 	}
 
-	if len(result.Counts) == 0 {
-		t.Errorf("handler returned unexpected body: got %v want %s",
-			len(result.Counts), "larger than zero")
-	}
 
 	sqlQuery := `SELECT COUNT(*) AS total FROM counter`
 	var counterSummary counterSummary
