@@ -8,6 +8,11 @@
 # Test binary, built with `go test -c`
 *.test
 
+
+# Deployment Internal
+
+internal-k8s.yaml
+
 # Binary
 hello-universe-api
 
