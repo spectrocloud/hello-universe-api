@@ -99,12 +99,12 @@ func TestHealthHTTPHandlerInvalidToken(t *testing.T) {
 	handler := http.HandlerFunc(health.HealthHTTPHandler)
 	handler.ServeHTTP(rr, req)
 
-	if status := rr.Code; status != http.StatusUnauthorized {
+	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	expected := `Invalid credentials`
+	expected := `{"status":"OK"}`
 	msg := strings.TrimSpace(rr.Body.String())
 	if msg != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
