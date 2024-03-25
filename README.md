@@ -1,5 +1,5 @@
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
-![Coverage](https://img.shields.io/badge/Coverage-56.1%25-yellow)
+![Coverage](https://img.shields.io/badge/Coverage-54.2%25-yellow)
 
 # Hello Universe API
 
