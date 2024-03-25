@@ -22,8 +22,8 @@ A Postman collection is available to help you explore the API. Review the [Postm
 The quickest method to start the API server locally is by using the Docker image.
 
 ```shell
-docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.11
-docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.11
+docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.12
+docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.12
 ```
 
 To start the API server you must have connectivity to a Postgres instance. Use [environment variables](#environment-variables) to customize the API server start parameters.
@@ -59,6 +59,10 @@ Ensure all API requests have an `Authorization` header with the Bearer token.
 curl --location --request POST 'http://localhost:3000/api/v1/counter' \
 --header 'Authorization: Bearer 931A3B02-8DCC-543F-A1B2-69423D1A0B94'
 ```
+
+> [!NOTE]
+>
+> Authorization does not apply to the `/health` endpoint.
 
 ## Image Verification
 
