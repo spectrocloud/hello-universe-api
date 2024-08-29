@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/rs/zerolog/log"
@@ -77,15 +78,16 @@ func TestNewCounterHandlerContext(t *testing.T) {
 
 }
 
-func TestCounterHTTPHandlerGET(t *testing.T) {
+func TestCounterHTTPHandlerGETAllPages(t *testing.T) {
 
+	page := "test"
 	db, err := startDB()
 	if err != nil {
 		t.Errorf("Expected a new database connection, but got %s", err)
 	}
 
-	sqlQuery := `INSERT INTO counter(date,browser,os) VALUES ($1, $2, $3)`
-	_, err = db.Exec(sqlQuery, time.Now(), "Chrome", "Windows")
+	sqlQuery := `INSERT INTO counter(page,date,browser,os) VALUES ($1, $2, $3, $4)`
+	_, err = db.Exec(sqlQuery, page, time.Now(), "Chrome", "Windows")
 	if err != nil {
 		t.Errorf("Error inserting into counter table: %s", err)
 	}
@@ -121,8 +123,58 @@ func TestCounterHTTPHandlerGET(t *testing.T) {
 	}
 }
 
+func TestCounterHTTPHandlerGETOnePage(t *testing.T) {
+
+	page := "test"
+	db, err := startDB()
+	if err != nil {
+		t.Errorf("Expected a new database connection, but got %s", err)
+	}
+
+	sqlQuery := `INSERT INTO counter(page,date,browser,os) VALUES ($1, $2, $3, $4)`
+	_, err = db.Exec(sqlQuery, page, time.Now(), "Chrome", "Windows")
+	if err != nil {
+		t.Errorf("Error inserting into counter table: %s", err)
+	}
+
+	counter := NewCounterHandlerContext(db, context.Background(), false)
+
+	rr := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", fmt.Sprintf("v1/counter/%s", page), nil)	
+	// Set the gorilla/mux vars required for this test
+	req = mux.SetURLVars(req, map[string]string{
+		"page": page,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	handler := http.HandlerFunc(counter.CounterHTTPHandler)
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+
+	var result counterSummary
+
+	err = json.Unmarshal(rr.Body.Bytes(), &result)
+	if err != nil {
+		t.Errorf("Error unmarshalling response: %s", err)
+	}
+
+	fmt.Println(result)
+
+	if result.Total == 0 {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			result.Total, 0)
+	}
+}
+
 func TestCounterHTTPHandlerPOST(t *testing.T) {
 
+	page := "test"
 	db, err := startDB()
 	if err != nil {
 		t.Errorf("Expected a new database connection, but got %s", err)
@@ -131,7 +183,11 @@ func TestCounterHTTPHandlerPOST(t *testing.T) {
 	counter := NewCounterHandlerContext(db, context.Background(), false)
 
 	rr := httptest.NewRecorder()
-	req, err := http.NewRequest("POST", "v1/counter", nil)
+	req, err := http.NewRequest("POST", fmt.Sprintf("v1/counter/%s", page) , nil)
+	// Set the gorilla/mux vars required for this test
+	req = mux.SetURLVars(req, map[string]string{
+		"page": page,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -157,9 +213,9 @@ func TestCounterHTTPHandlerPOST(t *testing.T) {
 	}
 
 
-	sqlQuery := `SELECT COUNT(*) AS total FROM counter`
+	sqlQuery := `SELECT COUNT(*) AS total FROM counter WHERE page = $1`
 	var counterSummary counterSummary
-	err = db.GetContext(context.Background(), &counterSummary, sqlQuery)
+	err = db.GetContext(context.Background(), &counterSummary, sqlQuery, page)
 	if err != nil {
 		log.Error().Err(err).Msg("Error getting counter value.")
 		log.Debug().Msgf("SQL query: %s", sqlQuery)
@@ -168,5 +224,29 @@ func TestCounterHTTPHandlerPOST(t *testing.T) {
 	if counterSummary.Total < 1 {
 		t.Errorf("handler returned unexpected body: got %v want %s",
 			counterSummary.Total, "larger than zero")
+	}
+}
+
+func TestCounterHTTPHandlerPOSTNoPage(t *testing.T) {
+
+	db, err := startDB()
+	if err != nil {
+		t.Errorf("Expected a new database connection, but got %s", err)
+	}
+
+	counter := NewCounterHandlerContext(db, context.Background(), false)
+
+	rr := httptest.NewRecorder()
+	req, err := http.NewRequest("POST", "v1/counter" , nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	handler := http.HandlerFunc(counter.CounterHTTPHandler)
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusBadRequest {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusBadRequest)
 	}
 }
