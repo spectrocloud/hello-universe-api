@@ -12,7 +12,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/rs/zerolog/log"
@@ -141,13 +140,10 @@ func TestCounterHTTPHandlerGETOnePage(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", fmt.Sprintf("v1/counter/%s", page), nil)	
-	// Set the gorilla/mux vars required for this test
-	req = mux.SetURLVars(req, map[string]string{
-		"page": page,
-	})
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.SetPathValue("page", page)
 
 	handler := http.HandlerFunc(counter.CounterHTTPHandler)
 	handler.ServeHTTP(rr, req)
@@ -184,13 +180,10 @@ func TestCounterHTTPHandlerPOST(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("POST", fmt.Sprintf("v1/counter/%s", page) , nil)
-	// Set the gorilla/mux vars required for this test
-	req = mux.SetURLVars(req, map[string]string{
-		"page": page,
-	})
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.SetPathValue("page", page)
 
 	handler := http.HandlerFunc(counter.CounterHTTPHandler)
 	handler.ServeHTTP(rr, req)

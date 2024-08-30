@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
 
 	"github.com/jmoiron/sqlx"
@@ -97,14 +96,13 @@ func init() {
 }
 
 func main() {
-	r := mux.NewRouter()
 	ctx := context.Background()
 	counterRoute := endpoints.NewCounterHandlerContext(globalDb, ctx, globalAuthorization)
 	healthRoute := endpoints.NewHealthHandlerContext(ctx, globalAuthorization)
 
-	r.HandleFunc(internal.ApiPrefix+"counter", counterRoute.CounterHTTPHandler)
-	r.HandleFunc(internal.ApiPrefix+"counter/{page}", counterRoute.CounterHTTPHandler)
-	r.HandleFunc(internal.ApiPrefix+"health", healthRoute.HealthHTTPHandler)
+	http.HandleFunc(internal.ApiPrefix+"counter", counterRoute.CounterHTTPHandler)
+	http.HandleFunc(internal.ApiPrefix+"counter/{page}", counterRoute.CounterHTTPHandler)
+	http.HandleFunc(internal.ApiPrefix+"health", healthRoute.HealthHTTPHandler)
 
 	log.Info().Msgf("Server is configured for port %s and listening on %s", globalPort, globalHostURL)
 	log.Info().Msgf("Database is configured for %s:%d", dbHost, dbPort)
@@ -112,15 +110,7 @@ func main() {
 	log.Info().Msgf("Authorization is set to: %v", globalAuthorization)
 	log.Info().Msg("Starting server...")
 
-	srv := &http.Server{
-        Handler:      r,
-        Addr:         globalHostURL,
-        // Good practice: enforce timeouts for servers you create!
-        WriteTimeout: 15 * time.Second,
-        ReadTimeout:  15 * time.Second,
-    }
-
-	err := srv.ListenAndServe()
+	err := http.ListenAndServe(globalHostURL, nil)
 	if err != nil {
 		log.Fatal().Err(err).Msg("There's an error with the server")
 	}

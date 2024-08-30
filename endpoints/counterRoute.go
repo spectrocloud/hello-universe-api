@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"github.com/mileusna/useragent"
 	"github.com/rs/zerolog/log"
@@ -23,8 +22,7 @@ func NewCounterHandlerContext(db *sqlx.DB, ctx context.Context, authorization bo
 }
 
 func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, request *http.Request) {
-	vars := mux.Vars(request)
-	page := vars["page"]
+	page := request.PathValue("page")
 
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -55,7 +53,7 @@ func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, reques
 		writer.WriteHeader(http.StatusCreated)
 		payload = value
 	case "GET":
-		value, err := route.getHandler(request, page)
+		value, err := route.getHandler(page)
 		if err != nil {
 			log.Debug().Msg("Error getting counter value.")
 			http.Error(writer, "Error getting counter value.", http.StatusInternalServerError)
@@ -128,16 +126,16 @@ func (route *CounterRoute) postHandler(r *http.Request, page string) ([]byte, er
 }
 
 // getHandler returns the current counter value from the database as a JSON object.
-func (route *CounterRoute) getHandler(r *http.Request, page string) ([]byte, error) {
+func (route *CounterRoute) getHandler(page string) ([]byte, error) {
 	if page != "" {
-		return route.getHandlerForPage(r, page)
+		return route.getHandlerForPage(page)
 	}
 
-	return route.getHandlerAllPages(r)
+	return route.getHandlerAllPages()
 }
 
 // getHandlerAllPages returns the current counter value for all pages from the database as a JSON object.
-func (route *CounterRoute) getHandlerAllPages(r *http.Request) ([]byte, error) {
+func (route *CounterRoute) getHandlerAllPages() ([]byte, error) {
 	sqlQuery := `SELECT COUNT(*) AS total FROM counter`
 	var counterSummary counterSummary
 	err := route.DB.GetContext(route.ctx, &counterSummary, sqlQuery)
@@ -156,7 +154,7 @@ func (route *CounterRoute) getHandlerAllPages(r *http.Request) ([]byte, error) {
 }
 
 // getHandlerForPage returns the current counter value for a single page from the database as a JSON object.
-func (route *CounterRoute) getHandlerForPage(r *http.Request, page string) ([]byte, error) {
+func (route *CounterRoute) getHandlerForPage(page string) ([]byte, error) {
 	sqlQuery := `SELECT COUNT(*) AS total FROM counter WHERE page = $1`
 	var counterSummary counterSummary
 	err := route.DB.GetContext(route.ctx, &counterSummary, sqlQuery, page)

@@ -24,11 +24,10 @@ func TestInitDB(t *testing.T) {
 
 	const (
 		image          string = "ghcr.io/spectrocloud/hello-universe-db"
-		image_veresion string = "1.0.0"
+		image_version string = "1.0.2"
 	)
 
-	postgresContainer, err := postgres.RunContainer(ctx,
-		testcontainers.WithImage(image+":"+image_veresion),
+	postgresContainer, err := postgres.Run(ctx, fmt.Sprintf("%s:%s", image, image_version),
 		postgres.WithDatabase(dbName),
 		postgres.WithUsername(dbUser),
 		postgres.WithPassword(dbPassword),

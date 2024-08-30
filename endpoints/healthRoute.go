@@ -24,7 +24,7 @@ func (health *HealthRoute) HealthHTTPHandler(writer http.ResponseWriter, request
 
 	switch request.Method {
 	case "GET":
-		value, err := health.getHandler(request)
+		value, err := health.getHandler()
 		if err != nil {
 			log.Debug().Msg("Error getting counter value.")
 			http.Error(writer, "Error getting counter value.", http.StatusInternalServerError)
@@ -42,6 +42,6 @@ func (health *HealthRoute) HealthHTTPHandler(writer http.ResponseWriter, request
 }
 
 // getHandler returns a health check response.
-func (health *HealthRoute) getHandler(r *http.Request) ([]byte, error) {
+func (health *HealthRoute) getHandler() ([]byte, error) {
 	return json.Marshal(map[string]string{"status": "OK"})
 }
