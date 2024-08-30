@@ -17,13 +17,40 @@ The [Hello Universe](https://github.com/spectrocloud/hello-universe) app include
 
 A Postman collection is available to help you explore the API. Review the [Postman collection](./tests/postman_collection.json) to get started.
 
+# Prerequisites
+Ensure [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your local machine is available. 
+
+- Use the following command and ensure you receive an output displaying the version number.
+    ```
+    docker version
+    ```
+    
+Alternatively, you can install [Podman](https://podman.io/docs/installation).
+
+- If you are not running a Linux operating system, create and start the Podman Machine in your local environment. Otherwise, skip this step.
+    ```
+    podman machine init
+    podman machine start
+    ```
+- Use the following command and ensure you receive an output displaying the installation information.
+    ```
+    podman info
+    ```
+
 # Usage
 
 The quickest method to start the API server locally is by using the Docker image.
 
 ```shell
-docker pull ghcr.io/spectrocloud/hello-universe-api:1.0.12
-docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.0.12
+docker pull ghcr.io/spectrocloud/hello-universe-api:1.1.0
+docker run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.1.0
+```
+
+If you choose Podman, you can use the following commands.
+
+```shell
+podman pull ghcr.io/spectrocloud/hello-universe-api:1.1.0
+podman run -p 3000:3000 ghcr.io/spectrocloud/hello-universe-api:1.1.0
 ```
 
 To start the API server you must have connectivity to a Postgres instance. Use [environment variables](#environment-variables) to customize the API server start parameters.
