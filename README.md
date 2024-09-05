@@ -27,7 +27,7 @@ Ensure [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your
     
 Alternatively, you can install [Podman](https://podman.io/docs/installation).
 
-- If you are not running a Linux operating system, create and start the Podman Machine in your local environment. Otherwise, skip this step.
+- If you are not using a Linux operating system, create and start the Podman Machine in your local environment. Otherwise, skip this step.
     ```
     podman machine init
     podman machine start
