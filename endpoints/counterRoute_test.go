@@ -249,7 +249,7 @@ func TestCounterHTTPHandlerPOSTNoPage(t *testing.T) {
 
 	if result.Total != 1 {
 		t.Errorf("handler total returned unexpected body: got %v want %d",
-			result.Total, 1 )
+			result.Total, 1)
 	}
 
 	sqlQuery := `SELECT COUNT(*) AS total FROM counter`
