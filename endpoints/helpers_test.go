@@ -1,14 +1,12 @@
-package internal_test
+package endpoints_test
 
 import (
 	"context"
 	"fmt"
-	"log"
-	"testing"
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	"github.com/rs/zerolog/log"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -23,8 +21,7 @@ const (
 	image_version string = "1.1.0"
 )
 
-func TestInitDB(t *testing.T) {
-
+func CreatePostgresTestContainer() (*postgres.PostgresContainer, error) {
 	ctx := context.Background()
 	postgresContainer, err := postgres.Run(ctx, fmt.Sprintf("%s:%s", image, image_version),
 		postgres.WithDatabase(dbName),
@@ -36,47 +33,16 @@ func TestInitDB(t *testing.T) {
 				WithStartupTimeout(5*time.Second)),
 	)
 	if err != nil {
-		log.Fatalf("failed to start container: %s", err)
+		return nil, err
 	}
 
-	db, err := startDB(ctx, postgresContainer)
-	if err != nil {
-		log.Fatalf("failed to start database: %s", err)
-	}
-
-	err = internal.InitDB(ctx, db)
-	if err != nil {
-		t.Errorf("Expected database initialization, but got %s", err)
-	}
-
-	// Check if the table was created
-	query := `SELECT EXISTS (
-		SELECT 1 FROM pg_tables
-		WHERE schemaname = 'public'
-		AND tablename = 'counter'
-	);
-	`
-
-	var tableExists bool
-	err = db.QueryRowContext(ctx, query).Scan(&tableExists)
-	if err != nil {
-		t.Errorf("Unable to query the database: %s", err)
-	}
-
-	if !tableExists {
-		t.Errorf("Expected table 'counter' to exist, but it does not.")
-	}
-
-	defer func() {
-		if err := postgresContainer.Terminate(ctx); err != nil {
-			log.Fatalf("failed to terminate container: %s", err)
-		}
-	}()
-
+	return postgresContainer, nil
 }
 
-func startDB(ctx context.Context, container *postgres.PostgresContainer) (*sqlx.DB, error) {
-
+// StartTestDB returns a new database connection to the counter database.
+// A local database is required to run the tests.
+func StartTestDB(container *postgres.PostgresContainer) (*sqlx.DB, error) {
+	ctx := context.Background()
 	connection, err := container.ConnectionString(ctx,
 		fmt.Sprintf("user=%s", dbUser),
 		fmt.Sprintf("password=%s", dbPassword),
@@ -97,6 +63,17 @@ func startDB(ctx context.Context, container *postgres.PostgresContainer) (*sqlx.
 		return nil, err
 	}
 
-	return db, err
+	err = internal.InitDB(ctx, db)
+	if err != nil {
+		return nil, fmt.Errorf("Expected database initialization, but got %s", err)
+	}
 
+	return db, err
+}
+
+func CleanUpTestContainer(container *postgres.PostgresContainer) {
+	ctx := context.Background()
+	if err := container.Terminate(ctx); err != nil {
+		log.Fatal().Msgf("failed to terminate container: %s", err)
+	}
 }

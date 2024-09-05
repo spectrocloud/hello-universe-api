@@ -1,7 +1,7 @@
 // Copyright (c) Spectro Cloud
 // SPDX-License-Identifier: MPL-2.0
 
-package endpoints
+package endpoints_test
 
 import (
 	"context"
@@ -9,24 +9,26 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"spectrocloud.com/hello-universe-api/endpoints"
 )
 
 func TestNewHealthHanderContext(t *testing.T) {
 	ctx := context.Background()
 	authorization := true
-	health := NewHealthHandlerContext(ctx, authorization)
+	health := endpoints.NewHealthHandlerContext(ctx, authorization)
 	if health == nil {
 		t.Errorf("Expected a new HealthRoute, but got nil")
 	}
 
 	if health != nil {
 
-		if health.ctx == nil {
-			t.Errorf("Expected context to be %v, but got %v", ctx, health.ctx)
+		if health.Ctx == nil {
+			t.Errorf("Expected context to be %v, but got %v", ctx, health.Ctx)
 		}
 
-		if health.authorization != authorization {
-			t.Errorf("Expected authorization to be %v, but got %v", authorization, health.authorization)
+		if health.Authorization != authorization {
+			t.Errorf("Expected authorization to be %v, but got %v", authorization, health.Authorization)
 		}
 
 	}
@@ -35,7 +37,7 @@ func TestNewHealthHanderContext(t *testing.T) {
 
 func TestHealthHTTPHandler(t *testing.T) {
 
-	health := NewHealthHandlerContext(context.Background(), false)
+	health := endpoints.NewHealthHandlerContext(context.Background(), false)
 
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "v1/health", nil)
@@ -61,7 +63,7 @@ func TestHealthHTTPHandler(t *testing.T) {
 
 func TestHealthHTTPHandlerInvalidMethod(t *testing.T) {
 
-	health := NewHealthHandlerContext(context.Background(), false)
+	health := endpoints.NewHealthHandlerContext(context.Background(), false)
 
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("POST", "v1/health", nil)
@@ -88,7 +90,7 @@ func TestHealthHTTPHandlerInvalidMethod(t *testing.T) {
 
 func TestHealthHTTPHandlerInvalidToken(t *testing.T) {
 
-	health := NewHealthHandlerContext(context.Background(), true)
+	health := endpoints.NewHealthHandlerContext(context.Background(), true)
 
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "v1/health", nil)
@@ -115,7 +117,7 @@ func TestHealthHTTPHandlerInvalidToken(t *testing.T) {
 
 func TestHealthHTTPHandlerValidToken(t *testing.T) {
 
-	health := NewHealthHandlerContext(context.Background(), true)
+	health := endpoints.NewHealthHandlerContext(context.Background(), true)
 
 	rr := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "v1/health", nil)
