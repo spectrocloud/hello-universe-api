@@ -96,9 +96,9 @@ func TestCounterHTTPHandlerGETAllPages(t *testing.T) {
 		t.Errorf("Error unmarshalling response: %s", err)
 	}
 
-	if result.Total == 0 {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			result.Total, 0)
+	if result.Total != 1 {
+		t.Errorf("handler returned unexpected body: got %v want %d",
+			result.Total, 1)
 	}
 }
 
@@ -147,9 +147,9 @@ func TestCounterHTTPHandlerGETOnePage(t *testing.T) {
 		t.Errorf("Error unmarshalling response: %s", err)
 	}
 
-	if result.Total == 0 {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			result.Total, 0)
+	if result.Total != 1 {
+		t.Errorf("handler returned unexpected body: got %v want %d",
+			result.Total, 1)
 	}
 }
 
@@ -205,9 +205,9 @@ func TestCounterHTTPHandlerPOST(t *testing.T) {
 		log.Debug().Msgf("SQL query: %s", sqlQuery)
 	}
 
-	if counterSummary.Total < 1 {
-		t.Errorf("handler returned unexpected body: got %v want %s",
-			counterSummary.Total, "larger than zero")
+	if counterSummary.Total != 1 {
+		t.Errorf("handler returned unexpected body: got %v want %d",
+			counterSummary.Total, 1)
 	}
 }
 
@@ -247,9 +247,9 @@ func TestCounterHTTPHandlerPOSTNoPage(t *testing.T) {
 		t.Errorf("Error unmarshalling response: %s", err)
 	}
 
-	if result.Total < 0 {
-		t.Errorf("handler total returned unexpected body: got %v want %s",
-			result.Total, "larger than zero")
+	if result.Total != 1 {
+		t.Errorf("handler total returned unexpected body: got %v want %d",
+			result.Total, 1 )
 	}
 
 	sqlQuery := `SELECT COUNT(*) AS total FROM counter`
@@ -260,8 +260,8 @@ func TestCounterHTTPHandlerPOSTNoPage(t *testing.T) {
 		log.Debug().Msgf("SQL query: %s", sqlQuery)
 	}
 
-	if counterSummary.Total < 1 {
-		t.Errorf("handler returned unexpected body: got %v want %s",
-			counterSummary.Total, "larger than zero")
+	if counterSummary.Total != 1 {
+		t.Errorf("handler returned unexpected body: got %v want %d",
+			counterSummary.Total, 1)
 	}
 }
