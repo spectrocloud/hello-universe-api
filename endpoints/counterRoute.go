@@ -41,10 +41,6 @@ func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, reques
 	switch request.Method {
 	case "POST":
 		log.Debug().Msg("POST request received. Incrementing counter.")
-		if page == "" {
-			log.Debug().Msg("Cannot increment counter without page.")
-			http.Error(writer, "Cannot increment counter without page.", http.StatusBadRequest)
-		}
 		value, err := route.postHandler(request, page)
 		if err != nil {
 			log.Debug().Msg("Error incrementing counter.")

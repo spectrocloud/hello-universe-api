@@ -230,7 +230,7 @@ func TestCounterHTTPHandlerPOSTNoPage(t *testing.T) {
 	counter := NewCounterHandlerContext(db, context.Background(), false)
 
 	rr := httptest.NewRecorder()
-	req, err := http.NewRequest("POST", "v1/counter" , nil)
+	req, err := http.NewRequest("POST", "v1/counter", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -238,8 +238,34 @@ func TestCounterHTTPHandlerPOSTNoPage(t *testing.T) {
 	handler := http.HandlerFunc(counter.CounterHTTPHandler)
 	handler.ServeHTTP(rr, req)
 
-	if status := rr.Code; status != http.StatusBadRequest {
+	if status := rr.Code; status != http.StatusCreated {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusBadRequest)
+			status, http.StatusCreated)
+	}
+
+	var result counterSummary
+
+	err = json.Unmarshal(rr.Body.Bytes(), &result)
+	if err != nil {
+		t.Errorf("Error unmarshalling response: %s", err)
+	}
+
+	if result.Total < 0 {
+		t.Errorf("handler total returned unexpected body: got %v want %s",
+			result.Total, "larger than zero")
+	}
+
+
+	sqlQuery := `SELECT COUNT(*) AS total FROM counter`
+	var counterSummary counterSummary
+	err = db.GetContext(context.Background(), &counterSummary, sqlQuery)
+	if err != nil {
+		log.Error().Err(err).Msg("Error getting counter value.")
+		log.Debug().Msgf("SQL query: %s", sqlQuery)
+	}
+
+	if counterSummary.Total < 1 {
+		t.Errorf("handler returned unexpected body: got %v want %s",
+			counterSummary.Total, "larger than zero")
 	}
 }
