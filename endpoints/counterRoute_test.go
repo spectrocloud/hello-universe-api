@@ -96,8 +96,6 @@ func TestCounterHTTPHandlerGETAllPages(t *testing.T) {
 		t.Errorf("Error unmarshalling response: %s", err)
 	}
 
-	fmt.Println(result)
-
 	if result.Total == 0 {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			result.Total, 0)
@@ -148,8 +146,6 @@ func TestCounterHTTPHandlerGETOnePage(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error unmarshalling response: %s", err)
 	}
-
-	fmt.Println(result)
 
 	if result.Total == 0 {
 		t.Errorf("handler returned unexpected body: got %v want %v",

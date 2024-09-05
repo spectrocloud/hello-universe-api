@@ -40,7 +40,6 @@ func CreatePostgresTestContainer() (*postgres.PostgresContainer, error) {
 }
 
 // StartTestDB returns a new database connection to the counter database.
-// A local database is required to run the tests.
 func StartTestDB(container *postgres.PostgresContainer) (*sqlx.DB, error) {
 	ctx := context.Background()
 	connection, err := container.ConnectionString(ctx,
