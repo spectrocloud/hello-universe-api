@@ -21,19 +21,19 @@ A Postman collection is available to help you explore the API. Review the [Postm
 Ensure [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your local machine is available. 
 
 - Use the following command and ensure you receive an output displaying the version number.
-    ```
+    ```shell
     docker version
     ```
     
 Alternatively, you can install [Podman](https://podman.io/docs/installation).
 
 - If you are not using a Linux operating system, create and start the Podman Machine in your local environment. Otherwise, skip this step.
-    ```
+    ```shell
     podman machine init
     podman machine start
     ```
 - Use the following command and ensure you receive an output displaying the installation information.
-    ```
+    ```shell
     podman info
     ```
 
