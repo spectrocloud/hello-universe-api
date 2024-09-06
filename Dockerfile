@@ -1,7 +1,7 @@
 # Copyright (c) Spectro Cloud
 # SPDX-License-Identifier: MPL-2.0
 
-FROM golang:1.21.7-alpine3.19 as builder
+FROM golang:1.23.0-alpine3.20 as builder
 WORKDIR /go/src/app
 COPY . .
 RUN go build -o /go/bin/app && \

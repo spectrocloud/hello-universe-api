@@ -101,13 +101,15 @@ func main() {
 	healthRoute := endpoints.NewHealthHandlerContext(ctx, globalAuthorization)
 
 	http.HandleFunc(internal.ApiPrefix+"counter", counterRoute.CounterHTTPHandler)
+	http.HandleFunc(internal.ApiPrefix+"counter/{page}", counterRoute.CounterHTTPHandler)
 	http.HandleFunc(internal.ApiPrefix+"health", healthRoute.HealthHTTPHandler)
 
-	log.Info().Msgf("Server is configured for port %s and listing on %s", globalPort, globalHostURL)
+	log.Info().Msgf("Server is configured for port %s and listening on %s", globalPort, globalHostURL)
 	log.Info().Msgf("Database is configured for %s:%d", dbHost, dbPort)
 	log.Info().Msgf("Trace level set to: %s", globalTraceLevel)
 	log.Info().Msgf("Authorization is set to: %v", globalAuthorization)
 	log.Info().Msg("Starting server...")
+
 	err := http.ListenAndServe(globalHostURL, nil)
 	if err != nil {
 		log.Fatal().Err(err).Msg("There's an error with the server")

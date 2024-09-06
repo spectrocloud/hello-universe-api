@@ -12,6 +12,7 @@ import (
 
 type Counter struct {
 	Id      int           `json:"id" db:"id"`
+	Page    string        `json:"page" db:"page"`
 	Date    *sql.NullTime `json:"date" db:"date"`
 	Browser string        `json:"browser" db:"browser"`
 	Os      string        `json:"os" db:"os"`
@@ -19,16 +20,16 @@ type Counter struct {
 
 type CounterRoute struct {
 	DB            *sqlx.DB
-	ctx           context.Context
-	authorization bool
+	Ctx           context.Context
+	Authorization bool
 }
 
-type counterSummary struct {
+type CounterSummary struct {
 	Total  int64     `json:"total" db:"total"`
 	Counts []Counter `json:"counts,omitempty" db:"counts"`
 }
 
 type HealthRoute struct {
-	ctx           context.Context
-	authorization bool
+	Ctx           context.Context
+	Authorization bool
 }

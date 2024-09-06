@@ -22,13 +22,14 @@ func NewCounterHandlerContext(db *sqlx.DB, ctx context.Context, authorization bo
 }
 
 func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, request *http.Request) {
-	log.Debug().Msg("POST request received. Incrementing counter.")
+	page := request.PathValue("page")
+
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	writer.Header().Set("Access-Control-Allow-Headers", "*")
 	var payload []byte
 
-	if route.authorization && request.Method != "OPTIONS" {
+	if route.Authorization && request.Method != "OPTIONS" {
 		validation := internal.ValidateToken(request.Header.Get("Authorization"))
 		if !validation {
 			log.Info().Msg("Invalid token.")
@@ -39,7 +40,8 @@ func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, reques
 
 	switch request.Method {
 	case "POST":
-		value, err := route.postHandler(request)
+		log.Debug().Msg("POST request received. Incrementing counter.")
+		value, err := route.postHandler(request, page)
 		if err != nil {
 			log.Debug().Msg("Error incrementing counter.")
 			http.Error(writer, "Error incrementing counter.", http.StatusInternalServerError)
@@ -47,7 +49,7 @@ func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, reques
 		writer.WriteHeader(http.StatusCreated)
 		payload = value
 	case "GET":
-		value, err := route.getHandler(request)
+		value, err := route.getHandler(page)
 		if err != nil {
 			log.Debug().Msg("Error getting counter value.")
 			http.Error(writer, "Error getting counter value.", http.StatusInternalServerError)
@@ -70,27 +72,27 @@ func (route *CounterRoute) CounterHTTPHandler(writer http.ResponseWriter, reques
 }
 
 // postHandler increments the counter in the database.
-func (route *CounterRoute) postHandler(r *http.Request) ([]byte, error) {
+func (route *CounterRoute) postHandler(r *http.Request, page string) ([]byte, error) {
 	currentTime := time.Now().UTC()
 	ua := useragent.Parse(r.UserAgent())
 	browser := ua.Name
 	os := ua.OS
-	transaction, err := route.DB.BeginTx(route.ctx, nil)
+	transaction, err := route.DB.BeginTx(route.Ctx, nil)
 	if err != nil {
 		log.Error().Err(err).Msg("Error beginning transaction.")
 		return []byte{}, err
 	}
-	sqlQuery := `INSERT INTO counter(date,browser,os) VALUES ($1, $2, $3)`
-	_, err = transaction.ExecContext(route.ctx, sqlQuery, currentTime, browser, os)
+	sqlQuery := `INSERT INTO counter(page, date, browser, os) VALUES ($1, $2, $3, $4)`
+	_, err = transaction.ExecContext(route.Ctx, sqlQuery, page, currentTime, browser, os)
 	if err != nil {
 		log.Error().Err(err).Msg("Error inserting counter value.")
 		log.Debug().Msgf("SQL query: %s", sqlQuery)
 		return []byte{}, err
 	}
 	log.Info().Msg("Counter incremented in database.")
-	getNewCountQuery := `SELECT COUNT(*) AS total FROM counter`
+	getNewCountQuery := `SELECT COUNT(*) AS total FROM counter WHERE page = $1`
 	var databaseTotal sql.NullInt64
-	result := transaction.QueryRowContext(route.ctx, getNewCountQuery)
+	result := transaction.QueryRowContext(route.Ctx, getNewCountQuery, page)
 	err = result.Scan(&databaseTotal)
 	if err != nil {
 		log.Error().Err(err).Msg("Error scanning counter value.")
@@ -100,7 +102,7 @@ func (route *CounterRoute) postHandler(r *http.Request) ([]byte, error) {
 		log.Error().Err(err).Msg("Counter value is null.")
 		return []byte{}, err
 	}
-	counterSummary := counterSummary{Total: databaseTotal.Int64}
+	counterSummary := CounterSummary{Total: databaseTotal.Int64}
 	err = transaction.Commit()
 	if err != nil {
 		log.Error().Err(err).Msg("Error committing transaction.")
@@ -120,16 +122,44 @@ func (route *CounterRoute) postHandler(r *http.Request) ([]byte, error) {
 }
 
 // getHandler returns the current counter value from the database as a JSON object.
-func (route *CounterRoute) getHandler(r *http.Request) ([]byte, error) {
+func (route *CounterRoute) getHandler(page string) ([]byte, error) {
+	if page != "" {
+		return route.getHandlerForPage(page)
+	}
+
+	return route.getHandlerAllPages()
+}
+
+// getHandlerAllPages returns the current counter value for all pages from the database as a JSON object.
+func (route *CounterRoute) getHandlerAllPages() ([]byte, error) {
 	sqlQuery := `SELECT COUNT(*) AS total FROM counter`
-	var counterSummary counterSummary
-	err := route.DB.GetContext(route.ctx, &counterSummary, sqlQuery)
+	var counterSummary CounterSummary
+	err := route.DB.GetContext(route.Ctx, &counterSummary, sqlQuery)
 	if err != nil {
 		log.Error().Err(err).Msg("Error getting counter value.")
-		log.Debug().Msgf("SQL query: %s", sqlQuery)
+		log.Info().Msgf("SQL query: %s", sqlQuery)
 		return []byte{}, err
 	}
 	log.Info().Msg("Counter value retrieved from database.")
+	payload, err := json.MarshalIndent(counterSummary, "", "  ")
+	if err != nil {
+		log.Error().Err(err).Msg("Error marshalling counterSummary struct into JSON.")
+		return []byte{}, err
+	}
+	return payload, nil
+}
+
+// getHandlerForPage returns the current counter value for a single page from the database as a JSON object.
+func (route *CounterRoute) getHandlerForPage(page string) ([]byte, error) {
+	sqlQuery := `SELECT COUNT(*) AS total FROM counter WHERE page = $1`
+	var counterSummary CounterSummary
+	err := route.DB.GetContext(route.Ctx, &counterSummary, sqlQuery, page)
+	if err != nil {
+		log.Error().Err(err).Msg("Error getting counter value.")
+		log.Info().Msgf("SQL query: %s", sqlQuery)
+		return []byte{}, err
+	}
+	log.Info().Msgf("Counter value retrieved from database for page %s", page)
 	payload, err := json.MarshalIndent(counterSummary, "", "  ")
 	if err != nil {
 		log.Error().Err(err).Msg("Error marshalling counterSummary struct into JSON.")

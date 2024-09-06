@@ -17,6 +17,7 @@ func InitDB(ctx context.Context, db *sqlx.DB) error {
 	sqlStatement := `
 	CREATE TABLE IF NOT EXISTS counter (
 		id SERIAL PRIMARY KEY,
+		page varchar(255),
 		date timestamp NOT NULL,
 		browser varchar(255),
 		os varchar(255)
