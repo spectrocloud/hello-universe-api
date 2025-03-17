@@ -9,7 +9,7 @@ on:
 env:
   DB_VERSION: 1.1.0
   GO_VERSION: "1.24"
-  NODE_VERSION: 20
+  NODE_VERSION: "20"
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -89,7 +89,7 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install Dependencies
         run: make tests
