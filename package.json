@@ -1,6 +1,6 @@
 {
     "name": "hello-universe-api",
-    "version": "1.0.2",
+    "version": "1.1.1",
     "private": false,
     "scripts": {
         "prepare": "husky install",

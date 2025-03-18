@@ -8,6 +8,8 @@ on:
 
 env:
   DB_VERSION: 1.1.0
+  GO_VERSION: "1.24"
+  NODE_VERSION: "20"
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -35,7 +37,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.21"
+          go-version: ${{ env.GO_VERSION }}
           check-latest: true
 
       - name: Build
@@ -52,7 +54,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.21"
+          go-version: ${{ env.GO_VERSION }}
           check-latest: true
 
       - name: Lint Internal Package
@@ -69,7 +71,7 @@ jobs:
     steps:
       - name: Retrieve Credentials
         id: import-secrets
-        uses: hashicorp/vault-action@v2
+        uses: hashicorp/vault-action@v3
         with:
           url: https://vault.prism.spectrocloud.com
           method: approle
@@ -87,7 +89,7 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install Dependencies
         run: make tests
@@ -97,28 +99,11 @@ jobs:
         with:
           filename: coverage.out
 
-      - name: Verify Changed files
-        uses: tj-actions/verify-changed-files@v18
-        id: verify-changed-files
+      - name: Commit reviewable diff
+        uses: stefanzweifel/git-auto-commit-action@e348103e9026cc0eee72ae06630dbe30c8bf7a79 # v5
         with:
-          files: README.md
+          commit_message: "ci: commit coverage badge"          
 
-      - name: Commit changes
-        if: steps.verify-changed-files.outputs.files_changed == 'true'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add README.md
-          git commit -m "chore: Updated coverage badge."
-
-      - name: Push changes
-        if: steps.verify-changed-files.outputs.files_changed == 'true'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ steps.import-secrets.outputs.VAULT_GITHUB_TOKEN }}
-          branch: ${{ github.GITHUB_REF }} # This also worked with GITHUB_BASE_REF
-          repository: ${{ github.repository }}
-          force_with_lease: true
 
   API-Test:
     runs-on: ubuntu-latest
@@ -129,7 +114,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.21"
+          go-version: ${{ env.GO_VERSION }}
           check-latest: true
 
       - name: API Test
