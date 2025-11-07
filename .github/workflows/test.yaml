@@ -69,22 +69,12 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Retrieve Credentials
-        id: import-secrets
-        uses: hashicorp/vault-action@v3
-        with:
-          url: https://vault.prism.spectrocloud.com
-          method: approle
-          roleId: ${{ secrets.VAULT_ROLE_ID }}
-          secretId: ${{ secrets.VAULT_SECRET_ID }}
-          secrets: /providers/github/organizations/spectrocloud/token?org_name=spectrocloud token | VAULT_GITHUB_TOKEN
-
+    
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
-          token: ${{ steps.import-secrets.outputs.VAULT_GITHUB_TOKEN }}
 
       - name: Setup Nodejs
         uses: actions/setup-node@v3
