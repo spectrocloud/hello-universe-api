@@ -90,7 +90,7 @@ jobs:
           filename: coverage.out
 
       - name: Commit reviewable diff
-        uses: stefanzweifel/git-auto-commit-action@e348103e9026cc0eee72ae06630dbe30c8bf7a79 # v5
+        uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 # v5
         with:
           commit_message: "ci: commit coverage badge"          
 
