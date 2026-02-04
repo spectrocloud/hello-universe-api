@@ -10,6 +10,7 @@ env:
   DB_VERSION: 1.1.0
   GO_VERSION: "1.24"
   NODE_VERSION: "22"
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
   group: ci-${{ github.ref }}
